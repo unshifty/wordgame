@@ -7,7 +7,7 @@ defmodule WordgameWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_wordgame_key",
-    signing_salt: "fL3/UAsW"
+    signing_salt: "7a8+cHAQ"
   ]
 
   socket "/socket", WordgameWeb.UserSocket,
@@ -32,7 +32,6 @@ defmodule WordgameWeb.Endpoint do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
-    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :wordgame
   end
 
   plug Phoenix.LiveDashboard.RequestLogger,

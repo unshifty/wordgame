@@ -28,13 +28,7 @@ defmodule WordgameWeb.ChannelCase do
     end
   end
 
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Wordgame.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Wordgame.Repo, {:shared, self()})
-    end
-
+  setup _tags do
     :ok
   end
 end

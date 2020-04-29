@@ -10,6 +10,7 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :wordgame, WordgameWeb.Endpoint,
+  http: [:inet6, port: System.get_env("PORT")],
   url: [host: System.get_env("WEB_HOST"), port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
