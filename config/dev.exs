@@ -6,7 +6,7 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :wordgame, WordgameWeb.Endpoint,
+config :wordplay, WordplayWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -17,7 +17,7 @@ config :wordgame, WordgameWeb.Endpoint,
       "--mode",
       "development",
       "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
+      cd: Path.expand("../apps/wordplay/assets", __DIR__)
     ]
   ]
 
@@ -46,13 +46,13 @@ config :wordgame, WordgameWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :wordgame, WordgameWeb.Endpoint,
+config :wordplay, WordplayWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/wordgame_web/(live|views)/.*(ex)$",
-      ~r"lib/wordgame_web/templates/.*(eex)$"
+      ~r"lib/wordplay_web/(live|views)/.*(ex)$",
+      ~r"lib/wordplay_web/templates/.*(eex)$"
     ]
   ]
 

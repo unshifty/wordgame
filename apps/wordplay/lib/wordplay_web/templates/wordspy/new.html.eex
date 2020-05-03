@@ -1,0 +1,28 @@
+<section class="px-2 mx-auto max-w-5xl">
+  <h1 class="font-bold text-lg">Wordspy</h1>
+  <h2>A word guessing game for teams of two like the boardgame Codenames</h2>
+  <div class="mt-5">
+    <%= form_for @conn, Routes.wordspy_path(@conn, :create), [as: :game], fn f -> %>
+      <div class="flex items-baseline">
+        <label class="block">
+          <span class="text-gray-600 text-sm">Name of the game</span>
+          <div class="flex">
+            <%= text_input f, :name, [class: "form-input block w-56"] %>
+            <%= submit "Create Game", class: "ml-2 btn-primary" %>
+          </div>
+        </label>
+      </div>
+      <div class="mt-2 flex items-center">
+        <%# <span class="text-gray-600 text-sm">Words:</span> %>
+        <label class="">
+          <%= radio_button(f, :wordlist, "default", [checked: true, class: "form-radio"]) %>
+          <span class="ml-2">Clean Words</span>
+        </label>
+        <label class="ml-5">
+          <%= radio_button(f, :wordlist, "dirty", [class: "form-radio"]) %>
+          <span class="ml-2">Dirty Words</span>
+        </label>
+      </div>
+    <% end %>
+  </div>
+</section>

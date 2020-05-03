@@ -8,12 +8,12 @@
 use Mix.Config
 
 # Configures the endpoint
-config :wordgame, WordgameWeb.Endpoint,
+config :wordplay, WordplayWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "xgJwRKUNxz07+1y3oBfLqysYRt+2MJUejjv5G4GKb4oMG7ZJVPtznf9IfWbbUmrG",
-  render_errors: [view: WordgameWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: Wordgame.PubSub,
-  live_view: [signing_salt: "OGTY+2Ld"]
+  secret_key_base: "jT0y8r6O+5hMuNZw+Ub04kJMwvZKBXZiUbYQhHddWeoXhcL+3uVn1Hm5Rxx89ibT",
+  render_errors: [view: WordplayWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: Wordplay.PubSub,
+  live_view: [signing_salt: "PM/V3wTP"]
 
 # Configures Elixir's Logger
 config :logger, :console,
