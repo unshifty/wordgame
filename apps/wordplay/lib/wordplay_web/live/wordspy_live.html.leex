@@ -8,10 +8,15 @@
     <p class="mx-5 font-semibold">Or</p>
     <button class="btn w-64 rounded-lg bg-purple-500 text-white shadow hover:bg-purple-600">Become Spymaster</button>
   </div>
+  <div>
+    <p><%= @game.remaining_tiles.red %> red tiles remaining</p>
+    <p><%= @game.remaining_tiles.blue %> blue tiles remaining</p>
+  </div>
+  <button class="btn bg-gray-400 shadow rounded-lg" phx-click="new_game">New Game</button>
   <div class="mt-5 mx-auto grid grid-cols-4 lg:grid-cols-6 gap-1 sm:gap-2">
-    <%= for {word, tile} <- @game.tiles do %>
+    <%= for word <- @game.words do %>
       <button phx-click="reveal" phx-value-word="<%= word %>" class="focus:outline-none">
-        <div class="<%= tile_classes(tile) <> ~s( h-20 sm:h-24 md:h-32 flex flex-col justify-center text-xs sm:text-base md:text-lg rounded-lg) %>">
+        <div class="<%= tile_classes(@game.tiles[word]) <> ~s( h-20 sm:h-24 md:h-32 flex flex-col justify-center text-xs sm:text-base md:text-lg rounded-lg) %>">
           <p class="text-center break-words"><%= word %>
         </div>
       </button>

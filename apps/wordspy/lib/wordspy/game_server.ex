@@ -12,7 +12,7 @@ defmodule Wordspy.GameServer do
     {:ok, game, @timeout}
   end
 
-   @doc """
+  @doc """
   Returns a tuple used to register and lookup a game server process by name.
   """
   def via_tuple(game_name) do
@@ -29,6 +29,10 @@ defmodule Wordspy.GameServer do
 
   def end_turn(game_name) do
     call(game_name, :end_turn)
+  end
+
+  def new_game(game_name, wordlib) do
+    call(game_name, {:new_game, wordlib})
   end
 
   defp call(game_name, args) do
@@ -49,6 +53,11 @@ defmodule Wordspy.GameServer do
     {:reply, new_game, new_game, @timeout}
   end
 
+  def handle_call({:new_game, wordlib}, _, game) do
+    new_game = Wordspy.Game.new(game.name, wordlib)
+    {:reply, new_game, new_game, @timeout}
+  end
+
   def handle_info(:timeout, game) do
     {:stop, {:shutdown, :timeout}, game}
   end
@@ -63,6 +72,6 @@ defmodule Wordspy.GameServer do
   end
 
   defp game_name() do
-    Registry.keys(Wordspy.GameRegistry, self()) |> List.first
+    Registry.keys(Wordspy.GameRegistry, self()) |> List.first()
   end
 end
