@@ -2,10 +2,17 @@ defmodule WordplayWeb.WordspyLive do
   use WordplayWeb, :live_view
 
   @impl true
-  def mount(%{"id" => name}, session, socket) do
+  def mount(%{"id" => game_name}, session, socket) do
+    game = Wordspy.GameServer.summary(game_name)
+
     # subscribe to pubsub messages for this specific game
-    Phoenix.PubSub.subscribe(Wordplay.PubSub, game_topic(name))
-    game = Wordspy.GameServer.summary(name)
+    Phoenix.PubSub.subscribe(Wordplay.PubSub, game_topic(game_name))
+
+    case WordplayWeb.Presence.track(socket, game_name, %{}) do
+      {:error, error} -> IO.puts("Unable to track presence for " <> game_name <> ": " <> error)
+      _ -> IO.puts("Tracking presence for" <> game_name)
+    end
+
     socket = assign(socket, game: game)
     {:ok, socket}
   end

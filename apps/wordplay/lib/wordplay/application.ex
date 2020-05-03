@@ -11,6 +11,7 @@ defmodule Wordplay.Application do
       WordplayWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Wordplay.PubSub},
+      WordplayWeb.Presence,
       # Start the Endpoint (http/https)
       WordplayWeb.Endpoint
       # Start a worker by calling: Wordplay.Worker.start_link(arg)
