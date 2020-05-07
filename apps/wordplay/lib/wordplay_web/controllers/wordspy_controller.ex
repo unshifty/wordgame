@@ -5,11 +5,11 @@ defmodule WordplayWeb.WordspyController do
     render(conn, "new.html")
   end
 
-  def create(conn, %{"game" => %{"name" => name, "wordlist" => wordlist}}) do
-    name = get_name(name)
-    case Wordspy.GameSupervisor.start_game(name, String.to_existing_atom(wordlist)) do
+  def create(conn, %{"game" => %{"name" => name, "wordlist" => wordlib}}) do
+    name = get_or_generate_name(String.trim(name), String.to_existing_atom(wordlib))
+    case Wordspy.GameSupervisor.start_game(name, String.to_existing_atom(wordlib)) do
       {:ok, _} ->
-        redirect(conn, to: Routes.wordspy_path(conn, :index, name))
+        redirect(conn, to: Routes.wordspy_path(conn, :show, name))
       {:error, _error} ->
         conn
         |> put_flash(:error, "Unable to create game!")
@@ -17,9 +17,24 @@ defmodule WordplayWeb.WordspyController do
     end
   end
 
-  defp get_name(name) when name == "" do
-    Wordplay.NameGenerator.generate()
+  def show(conn, %{"id" => game_name} = params) do
+    # first see if the game exists
+    # if it does, live render the game
+    # if it doesn't, show a flash message and redirect to the create page
+    case Wordspy.GameServer.game_pid(game_name) do
+      pid when is_pid(pid) ->
+        live_render(conn, WordplayWeb.WordspyLive, session: params)
+
+      nil ->
+        conn
+        |> put_flash(:error, "The game '" <> game_name <> "' has either ended, or never existed.")
+        |> redirect(to: Routes.wordspy_path(conn, :new))
+    end
   end
-  defp get_name(name), do: name
+
+  defp get_or_generate_name(name, wordlib) when name == "" do
+    Wordplay.NameGenerator.generate(Wordplay.NameGenerator.adjectives(), Wordspy.WordCache.wordlist(wordlib))
+  end
+  defp get_or_generate_name(name, _), do: name
 
 end

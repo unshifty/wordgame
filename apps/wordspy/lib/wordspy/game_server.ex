@@ -13,10 +13,13 @@ defmodule Wordspy.GameServer do
   end
 
   @doc """
-  Returns a tuple used to register and lookup a game server process by name.
+  Returns the `pid` of the game server process registered under the
+  given `game_name`, or `nil` if no process is registered.
   """
-  def via_tuple(game_name) do
-    {:via, Registry, {Wordspy.GameRegistry, game_name}}
+  def game_pid(game_name) do
+    game_name
+    |> via_tuple()
+    |> GenServer.whereis()
   end
 
   def summary(game_name) do
@@ -33,6 +36,17 @@ defmodule Wordspy.GameServer do
 
   def new_game(game_name, wordlib) do
     call(game_name, {:new_game, wordlib})
+  end
+
+  def set_spymasters(game_name, spymasters) do
+    call(game_name, {:set_spymasters, spymasters})
+  end
+
+    @doc """
+  Returns a tuple used to register and lookup a game server process by name.
+  """
+  def via_tuple(game_name) do
+    {:via, Registry, {Wordspy.GameRegistry, game_name}}
   end
 
   defp call(game_name, args) do
@@ -58,12 +72,16 @@ defmodule Wordspy.GameServer do
     {:reply, new_game, new_game, @timeout}
   end
 
+  def handle_call({:set_spymasters, spymasters}, _, game) do
+    new_game = %Wordspy.Game{game | spymasters: spymasters}
+    {:reply, new_game, new_game, @timeout}
+  end
+
   def handle_info(:timeout, game) do
     {:stop, {:shutdown, :timeout}, game}
   end
 
   def terminate({:shutdown, :timeout}, _game) do
-    :ets.delete(:games_table, game_name())
     :ok
   end
 

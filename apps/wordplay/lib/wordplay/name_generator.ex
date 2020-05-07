@@ -4,15 +4,19 @@ defmodule Wordplay.NameGenerator do
   Generates a unique, URL-friendly name such as "bold-frog-8249".
   """
   def generate do
+    generate(adjectives(), nouns())
+  end
+
+  def generate(list_one, list_two) do
     [
-      Enum.random(adjectives()),
-      Enum.random(nouns()),
+      Enum.random(list_one) |> String.downcase,
+      Enum.random(list_two) |> String.downcase,
       :rand.uniform(9999)
     ]
     |> Enum.join("-")
   end
 
-  defp adjectives do
+  def adjectives do
     ~w(
       autumn hidden bitter sour sweet spicy hot
       misty silent empty dry wet dark summer
@@ -28,7 +32,7 @@ defmodule Wordplay.NameGenerator do
     )
   end
 
-  defp nouns do
+  def nouns do
     ~w(
       waterfall river breeze moon rain wind sea morning
       snow lake sunset pine shadow leaf dawn glitter forest

@@ -1,14 +1,18 @@
-<section class="px-2 mx-auto max-w-5xl">
+<section class="">
   <h1 class="font-bold text-lg">Wordspy</h1>
-  <h2>A word guessing game for teams of two like the boardgame Codenames</h2>
+  <p>A word guessing game for teams of two like the boardgame Codenames.</p>
+  <p>Play in person or over video chat.</p>
+  <p class="mt-5">There are currently <span class="font-bold"><%= game_count() %></span> games being played.</p>
+  <p>Choose <span class="font-semibold">Clean Words</span> for a family friendly game.</p>
+  <p>Choose <span class="font-semibold italic">Dirty Words</span> for a slightly randier experience.</p>
   <div class="mt-5">
     <%= form_for @conn, Routes.wordspy_path(@conn, :create), [as: :game], fn f -> %>
       <div class="flex items-baseline">
         <label class="block">
-          <span class="text-gray-600 text-sm">Name of the game</span>
+          <span class="text-gray-600 text-sm">Name your game</span>
           <div class="flex">
             <%= text_input f, :name, [class: "form-input block w-56"] %>
-            <%= submit "Create Game", class: "ml-2 btn-primary" %>
+            <%= submit "Create Game", class: "ml-2 btn btn-primary" %>
           </div>
         </label>
       </div>
@@ -25,4 +29,20 @@
       </div>
     <% end %>
   </div>
+  <article class="mt-5">
+    <h2 class="font-semibold">Instructions</h2>
+    <p>Each team is presented with a game board containing 24 cards with one word each.</p>
+    <p>Hidden under each card is the identity of the word, either 
+      <span class="text-red-600 font-bold">Red</span>,
+      <span class="text-blue-600 font-bold">Blue</span>, 
+      <span class="text-gray-600 font-bold">Decoy</span>, or
+      <span class="text-black font-bold">The Assassin</span>.</p>
+    <p class="mt-2">Each team elects a Spy Master who is able to see the identities of all the words.</p>
+    <p>Taking turns, each Spy Master gives a one word clue and a number to the rest of the team.</p>
+    <p>The clue relates to unrevealed words that belong to the team, and the number tells the team how many words the clue relates to.</p>
+    <p class="mt-2">The Spy Master's team reveals 0 or more cards that they think the Spy Master was referring to, then passes their turn to the other team.</p>
+    <p class="mt-2">The game ends when all of a team's words have been revealed, regardless of who revealed them.</p>
+    <p>Or</p>
+    <p>If a team reveals the Assassin card, the other team wins automatically!</p>
+  </article>
 </section>

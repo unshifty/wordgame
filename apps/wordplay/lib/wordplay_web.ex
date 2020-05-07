@@ -24,6 +24,7 @@ defmodule WordplayWeb do
       import Plug.Conn
       import WordplayWeb.Gettext
       alias WordplayWeb.Router.Helpers, as: Routes
+      import Phoenix.LiveView.Controller, only: [live_render: 2, live_render: 3]
     end
   end
 

@@ -11,8 +11,12 @@ defmodule Wordspy.WordCache do
     )
   end
 
-  def get_wordset(library, num) do
-    Agent.get(__MODULE__, &Map.get(&1, library))
+  def wordlist(wordlib) do
+    Agent.get(__MODULE__, &Map.get(&1, wordlib))
+  end
+
+  def generate_wordset(library, num) do
+    wordlist(library)
     |> Enum.take_random(num)
   end
 

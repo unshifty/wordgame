@@ -8,20 +8,31 @@ body {
 }
 
 .btn {
-  @apply px-3 py-2 font-semibold
+  @apply px-3 py-2 font-semibold rounded shadow
 }
 .btn:focus {
   @apply outline-none
 }
 
 .btn-primary {
-  @apply px-2 py-1 rounded bg-green-500 text-white font-semibold leading-tight border border-transparent
-}
-.btn-primary:focus {
-  @apply outline-none
+  @apply bg-green-500 text-white leading-tight border border-transparent
 }
 .btn-primary:hover {
   @apply bg-green-600
+}
+
+.btn-secondary {
+  @apply bg-purple-500 text-white leading-tight border border-transparent
+}
+.btn-secondary:hover {
+  @apply bg-purple-600
+}
+
+.btn-tertiary {
+  @apply text-gray-800 leading-tight border border-transparent shadow-none border border-gray-300
+}
+.btn-tertiary:hover {
+  @apply bg-gray-200
 }
 
 .input {
