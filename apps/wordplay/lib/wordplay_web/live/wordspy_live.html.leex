@@ -1,82 +1,79 @@
 <section class="text-sm sm:text-base font-semibold">
-  <div class="flex items-end justify-between">
-    <div class="flex flex-col items-start">
-      <p class="text-gray-600 text-xs uppercase">Your Allegiance</p>
-      <div class="p-1 flex bg-gray-200 border rounded shadow-inner">
-        <%= if @team == :blue do %>
-          <span class="py-1 w-16 bg-blue-600 text-white text-center rounded">Blue</span>
-          <button phx-click="choose_team" phx-value-team="red" class="py-1 w-16 text-gray-800 text-center rounded focus:outline-none">Red</button>
-        <% else %>
-          <button phx-click="choose_team" phx-value-team="blue" class="py-1 w-16 text-gray-800 text-center focus:outline-none">Blue</button>
-          <span class="py-1 w-16 bg-red-600 text-white text-center rounded">Red</span>
+  <div class="flex">
+    <div class="flex flex-col">
+      <div class="">
+        <p class="text-gray-600 text-xs uppercase">Your Allegiance</p>
+        <div class="p-1 w-40 flex bg-gray-200 border rounded shadow-inner">
+          <%= if @team == :blue do %>
+            <span class="py-1 w-1/2 bg-blue-600 text-white text-center rounded">Blue</span>
+            <button phx-click="choose_team" phx-value-team="red" class="py-1 w-1/2 text-gray-800 text-center rounded focus:outline-none">Red</button>
+          <% else %>
+            <button phx-click="choose_team" phx-value-team="blue" class="py-1 w-1/2 text-gray-800 text-center focus:outline-none">Blue</button>
+            <span class="py-1 w-1/2 bg-red-600 text-white text-center rounded">Red</span>
+          <% end %>
+        </div>
+      </div>
+      <div class="mt-2 font-semibold">
+        <%= cond do %>
+        <% @is_spymaster -> %>
+          <p class="px-3 bg-purple-600 text-white font-semibold rounded-full">You are the <em>Spy Master</em></p>
+        <% MapSet.size(@game.spymasters) >= 2 -> %>
+          <p>There are already 2 Spy Masters</p>
+        <% true -> %>
+          <button class="w-40 btn px-1 bg-purple-500 text-white shadow hover:bg-purple-600"
+                  phx-click="spymaster_clicked">Become Spymaster</button>
         <% end %>
       </div>
     </div>
-    <div class="font-semibold">
-      <%= cond do %>
-      <% @is_spymaster -> %>
-        <p class="px-3 bg-purple-600 text-white font-semibold rounded-full">You are the <em>Spy Master</em></p>
-      <% MapSet.size(@game.spymasters) >= 2 -> %>
-        <p>There are already 2 Spy Masters</p>
-      <% true -> %>
-        <button class="btn bg-purple-500 text-white shadow hover:bg-purple-600"
-                phx-click="spymaster_clicked">Become Spymaster</button>
-      <% end %>
-    </div>
-  </div>
-  <div class="mt-5 w-full flex justify-around text-white">
-    <div class="w-40 sm:w-56 flex flex-col">
-      <%= if @game.turn == :blue do %>
-      <div class="bg-gray-300 border shadow-blue rounded">
-      <% else %>
-      <div class="bg-gray-300 border border-gray-400 rounded">
-      <% end %>
-        <div class="p-2 flex flex-col text-gray-800">
-          <div class="flex items-center">
-            <p class="px-1 uppercase bg-blue-600 text-white rounded">Blue<span class="ml-2">🧑<%= @blue_count %></span></p>
-            <p class="ml-auto text-right">🔍<%= revealed_tiles(@game, :blue) %>/<%= total_tiles(@game, :blue) %></p>
-          </div>
-          <div class="mt-2">
-            <%= if @game.turn == :blue do %>
-              <button phx-click="end_turn" class="px-2 py-1 w-full text-blue-600 bg-white font-semibold rounded shadow hover:bg-blue-100 focus:outline-none">End Turn</button>
-            <% else %>
-              <p class="w-full px-2 py-1 text-center text-gray-500 font-semibold rounded">Red's Turn</p>
-            <% end %>
+    <div class="mt-5 w-full flex justify-around text-white">
+      <div class="w-40 sm:w-56 flex flex-col">
+        <%= if @game.turn == :blue do %>
+        <div class="bg-gray-300 border shadow-blue rounded">
+        <% else %>
+        <div class="bg-gray-300 border border-gray-400 rounded">
+        <% end %>
+          <div class="p-2 flex flex-col text-gray-800">
+            <div class="flex items-center">
+              <p class="px-1 uppercase bg-blue-600 text-white rounded">Blue<span class="ml-2">🧑<%= @blue_count %></span></p>
+              <p class="ml-auto text-right">🔍<%= revealed_tiles(@game, :blue) %>/<%= total_tiles(@game, :blue) %></p>
+            </div>
+            <div class="mt-2">
+              <%= if @game.turn == :blue and @team == :blue do %>
+                <button phx-click="end_turn" 
+                        class="px-2 py-1 w-full text-blue-600 bg-white font-semibold rounded shadow hover:bg-blue-100 focus:outline-none">
+                  End Turn
+                </button>
+              <% else %>
+                <p class="w-full px-2 py-1 text-center text-gray-500 font-semibold rounded"><%= team_name(@game.turn) %>'s Turn</p>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="w-40 sm:w-56 flex flex-col">
-       <%= if @game.turn == :red do %>
-      <div class="shadow-red bg-gray-300 border rounded">
-      <% else %>
-      <div class="bg-gray-300 border border-gray-400 rounded">
-      <% end %>
-        <div class="p-2 flex flex-col   text-gray-800 rounded">
-          <div class="flex justify-between items-center">
-            <p class="px-1 uppercase bg-red-600 text-white rounded">Red<span class="ml-2">🧑<%= @red_count %></span></p>
-            <p class="ml-auto text-right">🔍<%= revealed_tiles(@game, :red) %>/<%= total_tiles(@game, :red) %></p>
-          </div>
-          <div class="mt-2">
-            <%= if @game.turn == :red do %>
-              <button phx-click="end_turn" class="px-2 py-1 w-full text-red-600 bg-white font-semibold rounded shadow hover:bg-blue-100 focus:outline-none">End Turn</button>
-            <% else %>
-              <p class="w-full px-2 py-1 text-center text-gray-500 font-semibold rounded">Blue's Turn</p>
-            <% end %>
+      <div class="w-40 sm:w-56 flex flex-col">
+        <%= if @game.turn == :red do %>
+        <div class="shadow-red bg-gray-300 border rounded">
+        <% else %>
+        <div class="bg-gray-300 border border-gray-400 rounded">
+        <% end %>
+          <div class="p-2 flex flex-col   text-gray-800 rounded">
+            <div class="flex justify-between items-center">
+              <p class="px-1 uppercase bg-red-600 text-white rounded">Red<span class="ml-2">🧑<%= @red_count %></span></p>
+              <p class="ml-auto text-right">🔍<%= revealed_tiles(@game, :red) %>/<%= total_tiles(@game, :red) %></p>
+            </div>
+            <div class="mt-2">
+              <%= if @game.turn == :red and @team == :red do %>
+                <button phx-click="end_turn" class="px-2 py-1 w-full text-red-600 bg-white font-semibold rounded shadow hover:bg-blue-100 focus:outline-none">End Turn</button>
+              <% else %>
+                <p class="w-full px-2 py-1 text-center text-gray-500 font-semibold rounded"><%= team_name(@game.turn) %>'s Turn</p>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="mt-3 pt-3 mx-auto grid grid-cols-4 lg:grid-cols-6 gap-1 sm:gap-2 border-t border-gray-500">
-    <%= for word <- @game.words do %>
-      <button phx-click="<%= on_click_event(assigns, word) %>" phx-value-word="<%= word %>" class="font-semibold focus:outline-none">
-        <div class="<%= tile_classes(@game.tiles[word], @is_spymaster) <> ~s( h-12 sm:h-20 md:h-24 flex flex-col justify-center text-xs sm:text-base md:text-lg rounded-lg) %>">
-          <p class="text-center break-words"><span class="<%= word_classes(@game.tiles[word], @is_spymaster) <> ~s( )%>"><%= word %></span>
-        </div>
-      </button>
-    <% end %>
-  </div>
+  <%= render(WordplayWeb.WordspyView, "game_board.html", assigns) %>
   <div class="mt-5 flex items-center justify-between">
     <button class="btn btn-tertiary" phx-click="new_game">New Game</button>
   </div>

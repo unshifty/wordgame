@@ -15,7 +15,9 @@ defmodule WordplayWeb.WordspyLive do
 
   def mount(game_name, socket) do
     game = Wordspy.GameServer.summary(game_name)
-    %{blues: blue_count, reds: red_count} = player_count(game_name)
+
+    red_count = Presence.count(game_topic(game_name), :team, :red)
+    blue_count = Presence.count(game_topic(game_name), :team, :blue)
 
     # assign a random team to start out
     socket = assign(socket, :team, Enum.random([:red, :blue]))
@@ -30,7 +32,7 @@ defmodule WordplayWeb.WordspyLive do
     # changes to the presence count are handled in
     case Presence.track(self(), game_topic(game_name), socket.id, %{team: socket.assigns.team}) do
       {:error, error} -> IO.puts("Unable to track presence for " <> game_name <> ": " <> error)
-      _ -> IO.puts("Tracking presence for " <> game_name)
+      _ -> nil
     end
 
     socket =
@@ -41,7 +43,7 @@ defmodule WordplayWeb.WordspyLive do
 
   @impl true
   def handle_event("reveal", %{"word" => word}, socket) do
-    game = Wordspy.GameServer.reveal(socket.assigns.game.name, word, :red)
+    game = Wordspy.GameServer.reveal(socket.assigns.game.name, word)
 
     broadcast_game_update(game.name, :word_reveal)
 
@@ -94,7 +96,7 @@ defmodule WordplayWeb.WordspyLive do
     socket = assign(socket, :team, String.to_existing_atom(team))
     # update presence with the chosen side
     Presence.update(self(), game_topic(socket.assigns.game.name), socket.id, fn m ->
-      %{m | team: team}
+      %{m | team: String.to_existing_atom(team)}
     end)
 
     {:noreply, socket}
@@ -108,8 +110,9 @@ defmodule WordplayWeb.WordspyLive do
     IO.inspect(joins, label: "presence joins")
     IO.inspect(leaves, label: "presence leaves")
 
-    red_count = red_count + team_count(joins, leaves, :red)
-    blue_count = blue_count + team_count(joins, leaves, :blue)
+    red_count = red_count + Presence.count(joins, :team, :red) - Presence.count(leaves, :team, :red)
+    blue_count = blue_count + Presence.count(joins, :team, :blue) - Presence.count(leaves, :team, :blue)
+    IO.inspect({red_count, blue_count}, label: "new {red, blue} count")
 
     # remove any spymasters that left
     if map_size(leaves) > 0 do
@@ -143,7 +146,7 @@ defmodule WordplayWeb.WordspyLive do
     {:noreply, socket}
   end
 
-  def tile_classes(%{visibility: :revealed} = tile, _) do
+  def tile_classes(%{visibility: :revealed} = tile, _assigns) do
     cond do
       tile.team == :red ->
         "bg-red-600 text-white shadow-inner cursor-default"
@@ -159,36 +162,47 @@ defmodule WordplayWeb.WordspyLive do
     end
   end
 
-  def tile_classes(_, true) do
+  def tile_classes(_tile, %{is_spymaster: true}) do
     "bg-gray-300 text-black border border-gray-400 cursor-default"
   end
 
-  def tile_classes(_, false) do
-    "bg-gray-300 text-black border border-gray-400 hover:shadow-md"
+  def tile_classes(_tile, %{game: game, team: user_team}) do
+    if game.turn == user_team do
+      "bg-gray-300 text-black border border-gray-400 hover:shadow-md"
+    else
+      "bg-gray-300 text-black border border-gray-400 cursor-default"
+    end
   end
 
-  def word_classes(tile, is_spymaster) do
+  def word_classes(%{visibility: :revealed}, _assigns) do
+    ""
+  end
+  def word_classes(_tile, %{is_spymaster: false}) do
+    ""
+  end
+  def word_classes(tile, _is_spymaster) do
     cond do
-      tile.visibility == :revealed or !is_spymaster ->
-        ""
-
-      is_spymaster and tile.team == :red ->
+      tile.team == :red ->
         "border-b-4 border-red-600 text-red-600"
 
-      is_spymaster and tile.team == :blue ->
+      tile.team == :blue ->
         "border-b-4 border-blue-600 text-blue-600"
 
-      is_spymaster and tile.team == :bystander ->
+      tile.team == :bystander ->
         "border-b-4 border-gray-700 text-gray-700"
 
-      is_spymaster and tile.team == :assassin ->
+      tile.team == :assassin ->
         "p-1 bg-black text-white rounded-lg"
     end
   end
 
   def on_click_event(assigns, word) do
     # only enable reveal if hidden and not spymaster
-    if is_hidden(assigns.game, word) and not assigns.is_spymaster, do: "reveal", else: ""
+    if is_hidden(assigns.game, word) and not assigns.is_spymaster and assigns.game.turn == assigns.team do
+      "reveal"
+    else
+      ""
+    end
   end
 
   def revealed_tiles(game, team) do
@@ -199,23 +213,8 @@ defmodule WordplayWeb.WordspyLive do
     Wordspy.Game.total_tiles(game, team)
   end
 
-  defp team_count(joins, leaves, team) do
-    join_count =
-      joins
-      |> Enum.filter(fn {_, %{metas: [%{team: t}]}} -> t == team end)
-      |> Enum.count()
-
-    IO.inspect(join_count, label: "Joins")
-
-    leave_count =
-      leaves
-      |> Enum.filter(fn {_, %{metas: [%{team: t}]}} -> t == team end)
-      |> Enum.count()
-
-    IO.inspect(leave_count, label: "Leaves")
-
-    join_count - leave_count
-  end
+  def team_name(:red), do: "Red"
+  def team_name(:blue), do: "Blue"
 
   defp is_hidden(game, word) do
     game.tiles[word].visibility == :hidden
@@ -228,12 +227,6 @@ defmodule WordplayWeb.WordspyLive do
       game_topic(game_name),
       %{game_event: event}
     )
-  end
-
-  defp player_count(game_name) do
-    presence = Presence.list(game_topic(game_name))
-    IO.inspect(presence, label: "Presence list")
-    %{blues: 0, reds: 0}
   end
 
   defp game_topic(game_name) do

@@ -26,8 +26,8 @@ defmodule Wordspy.GameServer do
     call(game_name, :summary)
   end
 
-  def reveal(game_name, word, team) do
-    call(game_name, {:reveal, word, team})
+  def reveal(game_name, word) do
+    call(game_name, {:reveal, word})
   end
 
   def end_turn(game_name) do
@@ -57,8 +57,8 @@ defmodule Wordspy.GameServer do
     {:reply, game, game, @timeout}
   end
 
-  def handle_call({:reveal, word, team}, _, game) do
-    new_game = Wordspy.Game.reveal(game, word, team)
+  def handle_call({:reveal, word}, _, game) do
+    new_game = Wordspy.Game.reveal(game, word)
     {:reply, new_game, new_game, @timeout}
   end
 
