@@ -9,7 +9,7 @@ defmodule WordplayWeb.GameBoardLive do
 
   def render(assigns) do
     ~L"""
-    <div class="mx-auto grid grid-cols-4 lg:grid-cols-4 gap-1 sm:gap-2">
+    <div class="mx-auto grid grid-cols-4 lg:grid-cols-6 gap-1 sm:gap-2">
       <%= for word <- @game.words do %>
         <button phx-click="<%= on_click_event(assigns, word) %>" phx-value-word="<%= word %>" class="font-semibold focus:outline-none">
           <div class="<%= tile_classes(@game.tiles[word], assigns) <> ~s( h-12 sm:h-20 md:h-24 flex flex-col justify-center text-xs sm:text-base md:text-lg rounded-lg) %>">

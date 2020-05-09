@@ -5,11 +5,13 @@ defmodule WordplayWeb.WordspyController do
     render(conn, "new.html")
   end
 
-  def create(conn, %{"game" => %{"name" => name, "wordlist" => wordlib}}) do
-    name = get_or_generate_name(String.trim(name), String.to_existing_atom(wordlib))
+  def create(conn, %{"game" => %{"wordlist" => wordlib}}) do
+    name = generate_name(String.to_existing_atom(wordlib))
+
     case Wordspy.GameSupervisor.start_game(name, String.to_existing_atom(wordlib)) do
       {:ok, _} ->
         redirect(conn, to: Routes.wordspy_path(conn, :show, name))
+
       {:error, _error} ->
         conn
         |> put_flash(:error, "Unable to create game!")
@@ -36,9 +38,10 @@ defmodule WordplayWeb.WordspyController do
     end
   end
 
-  defp get_or_generate_name(name, wordlib) when name == "" do
-    Wordplay.NameGenerator.generate(Wordplay.NameGenerator.adjectives(), Wordspy.WordCache.wordlist(wordlib))
+  defp generate_name(wordlib) do
+    Wordplay.NameGenerator.generate(
+      Wordplay.NameGenerator.adjectives(),
+      Wordspy.WordCache.wordlist(wordlib)
+    )
   end
-  defp get_or_generate_name(name, _), do: name
-
 end

@@ -22,7 +22,7 @@ defmodule WordplayWeb.WordspyLive do
     spymaster_count = Presence.count(game_topic(game_name), :is_spymaster, true)
 
     # assign a random team to start out
-    socket = assign(socket, :team, Enum.random([:red, :blue]))
+    socket = assign(socket, team: Enum.random([:red, :blue]))
 
     # subscribe to pubsub messages for this specific game
     Phoenix.PubSub.subscribe(Wordplay.PubSub, game_topic(game_name))
@@ -32,7 +32,10 @@ defmodule WordplayWeb.WordspyLive do
     # socket.id is the key that identifies this specific instance
     # and the meta data is an empty map because there's no info to track
     # changes to the presence count are handled in
-    case Presence.track(self(), game_topic(game_name), socket.id, %{team: socket.assigns.team, is_spymaster: false}) do
+    case Presence.track(self(), game_topic(game_name), socket.id, %{
+           team: socket.assigns.team,
+           is_spymaster: false
+         }) do
       {:error, error} -> IO.puts("Unable to track presence for " <> game_name <> ": " <> error)
       _ -> nil
     end
@@ -92,9 +95,10 @@ defmodule WordplayWeb.WordspyLive do
 
   def handle_event("choose_team", %{"team" => team}, socket) do
     # update socket
-    socket = assign(socket, :team, String.to_existing_atom(team))
+    socket = assign(socket, team: String.to_existing_atom(team))
+    IO.inspect(socket)
     # update presence with the chosen side
-    broadcast_presence_update(socket, :team, socket.team)
+    broadcast_presence_update(socket, :team, socket.assigns.team)
 
     {:noreply, socket}
   end
@@ -102,7 +106,9 @@ defmodule WordplayWeb.WordspyLive do
   @impl true
   def handle_info(
         %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
-        %{assigns: %{user_count: %{red: red_count, blue: blue_count, spymasters: spymaster_count}}} = socket
+        %{
+          assigns: %{user_count: %{red: red_count, blue: blue_count, spymasters: spymaster_count}}
+        } = socket
       ) do
     Logger.debug("presence joins: #{inspect(joins)}")
     Logger.debug("presence leaves: #{inspect(leaves)}")
@@ -114,9 +120,12 @@ defmodule WordplayWeb.WordspyLive do
       blue_count + Presence.count(joins, :team, :blue) - Presence.count(leaves, :team, :blue)
 
     spymaster_count =
-      spymaster_count + Presence.count(joins, :is_spymaster, true) - Presence.count(leaves, :is_spymaster, true)
+      spymaster_count + Presence.count(joins, :is_spymaster, true) -
+        Presence.count(leaves, :is_spymaster, true)
 
-    socket = assign(socket, user_count: %{red: red_count, blue: blue_count, spymasters: spymaster_count})
+    socket =
+      assign(socket, user_count: %{red: red_count, blue: blue_count, spymasters: spymaster_count})
+
     {:noreply, socket}
   end
 
@@ -127,6 +136,7 @@ defmodule WordplayWeb.WordspyLive do
     socket = assign(socket, is_spymaster: false)
     handle_game_event(event, socket)
   end
+
   @impl true
   def handle_info(%{game_event: event}, socket) do
     handle_game_event(event, socket)
