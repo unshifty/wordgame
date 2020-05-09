@@ -1,35 +1,46 @@
 <section class="text-sm sm:text-base font-semibold">
-  <div class="flex">
-    <div class="flex flex-col">
-      <div class="">
-        <p class="text-gray-600 text-xs uppercase">Your Allegiance</p>
-        <div class="p-1 w-40 flex bg-gray-200 border rounded shadow-inner">
-          <%= if @team == :blue do %>
-            <span class="py-1 w-1/2 bg-blue-600 text-white text-center rounded">Blue</span>
-            <button phx-click="choose_team" phx-value-team="red" class="py-1 w-1/2 text-gray-800 text-center rounded focus:outline-none">Red</button>
-          <% else %>
-            <button phx-click="choose_team" phx-value-team="blue" class="py-1 w-1/2 text-gray-800 text-center focus:outline-none">Blue</button>
-            <span class="py-1 w-1/2 bg-red-600 text-white text-center rounded">Red</span>
-          <% end %>
-        </div>
-      </div>
-      <div class="mt-2 font-semibold">
+  <div class="mx-auto flex flex-col">
+    <div class="xs:hidden flex items-center justify-between">
+      <%= live_component(@socket, WordplayWeb.AllegianceLive, assigns) %>
+      <div class="mt-5 font-semibold">
         <%= cond do %>
         <% @is_spymaster -> %>
-          <p class="px-3 bg-purple-600 text-white font-semibold rounded-full">You are the <em>Spy Master</em></p>
-        <% MapSet.size(@game.spymasters) >= 2 -> %>
-          <p>There are already 2 Spy Masters</p>
+          <p class="px-1 bg-purple-600 text-white font-semibold rounded">You are the <em>Spy Master</em></p>
+        <% @user_count.spymasters >= 2 -> %>
+          <p class="text-center">There are already 2 Spy Masters</p>
         <% true -> %>
-          <button class="w-40 btn px-1 bg-purple-500 text-white shadow hover:bg-purple-600"
+          <button class="h-10 w-40 btn px-1 bg-purple-500 text-white shadow hover:bg-purple-600"
                   phx-click="spymaster_clicked">Become Spymaster</button>
         <% end %>
       </div>
     </div>
-    <div class="mt-5 w-full flex justify-around text-white">
+    <div class="flex items-stretch justify-between text-gray-800">
       <%= live_component(@socket, WordplayWeb.TeamPanelLive, %{assigns: assigns, team: :blue}) %>
+      <div class="mx-5 hidden xs:flex flex-col items-center">
+        <%= live_component(@socket, WordplayWeb.AllegianceLive, assigns) %>
+        <div class="mt-2 h-10 flex items-center font-semibold">
+          <%= cond do %>
+          <% @is_spymaster -> %>
+            <p class="px-1 bg-purple-600 text-white font-semibold rounded">You're the <em>Spy Master</em></p>
+          <% @user_count.spymasters >= 2 -> %>
+            <p class="text-center">There are already 2 Spy Masters</p>
+          <% true -> %>
+            <button class="h-10 w-40 btn px-1 bg-purple-500 text-white shadow hover:bg-purple-600"
+                    phx-click="spymaster_clicked">Become Spymaster</button>
+          <% end %>
+        </div>
+      </div>
       <%= live_component(@socket, WordplayWeb.TeamPanelLive, %{assigns: assigns, team: :red}) %>
     </div>
   </div>
+  <%= case @game.winner do %>
+  <% {:red, _} -> %>
+    <div class="p-4 my-3 bg-red-200 text-center text-red-800 rounded">Red Wins!</div>
+  <% {:blue, _} -> %>
+    <div class="p-4 my-3 bg-blue-200 text-lg text-center text-blue-800 rounded">Blue Wins!</div>
+  <% _ -> %>
+    <div class="my-3 border-t border-gray-500"></div>
+  <% end %>
   <%= live_component(@socket, WordplayWeb.GameBoardLive, assigns) %>
   <div class="mt-5 flex items-center justify-between">
     <button class="btn btn-tertiary" phx-click="new_game">New Game</button>

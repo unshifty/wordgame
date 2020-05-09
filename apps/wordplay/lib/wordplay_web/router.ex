@@ -18,6 +18,7 @@ defmodule WordplayWeb.Router do
     pipe_through :browser
 
     get "/wordspy", WordspyController, :new
+    post "/wordspy", WordspyController, :show
     resources "/wordspy/games", WordspyController, only: [:new, :create, :show]
 
     # live "/wordspy/games/:id", WordspyLive, :index

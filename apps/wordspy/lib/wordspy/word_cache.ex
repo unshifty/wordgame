@@ -1,12 +1,17 @@
 defmodule Wordspy.WordCache do
   use Agent
+  require Logger
 
   def start_link(_) do
     standard = load_word_list("../../data/wordlist_codenames.txt")
     duet = load_word_list("../../data/wordlist_duet.txt")
+
+    default = Enum.concat(standard, duet)
     undercover = load_word_list("../../data/wordlist_undercover.txt")
 
-    Agent.start_link(fn -> %{default: Enum.concat(standard, duet), dirty: undercover} end,
+    Logger.info("Loaded word lists")
+
+    Agent.start_link(fn -> %{default: default, dirty: undercover} end,
       name: __MODULE__
     )
   end

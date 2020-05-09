@@ -1,5 +1,5 @@
 defmodule Wordspy.Game do
-  defstruct [:name, :wordlib, :words, :tiles, :turn, :spymasters, :remaining_tiles, :winner]
+  defstruct [:name, :wordlib, :words, :tiles, :turn, :winner]
 
   alias Wordspy.{Game, Tile}
 
@@ -21,7 +21,6 @@ defmodule Wordspy.Game do
       words: Enum.shuffle(words),
       tiles: tilemap,
       turn: team1,
-      spymasters: MapSet.new(),
       winner: nil
     }
   end
@@ -41,14 +40,11 @@ defmodule Wordspy.Game do
       end
 
     # if revealed tile was not the team's end the turn
-    IO.inspect(tile, label: "revealed tile's team")
-    IO.inspect(game.turn, label: "game turn")
     turn = cond do
       tile.team == game.turn  -> game.turn
       true                    -> not_team(game.turn)
     end
 
-    IO.inspect(turn, label: "new turn after reveal")
     %Game{
       game
       | tiles: Map.put(game.tiles, word, tile),

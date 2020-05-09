@@ -20,12 +20,12 @@ RUN mix deps.compile
 
 # build assets
 # COPY assets/package.json assets/package-lock.json ./assets/
-COPY priv priv
-COPY assets assets
-RUN cd ./assets \
+COPY apps/wordplay/priv apps/wordplay/priv
+COPY apps/wordplay/assets apps/wordplay/assets
+RUN cd ./apps/wordplay/assets \
     && npm ci --progress=false --no-audit --loglevel=error \
     && npm run deploy \
-    && cd ..
+    && cd ../../..
 # RUN npm run --prefix ./assets deploy
 RUN mix phx.digest
 
@@ -53,7 +53,7 @@ RUN mkdir /app
 WORKDIR /app
 
 # copy release to app container
-COPY --from=build /app/_build/prod/rel/wordgame .
+COPY --from=build /app/_build/prod/rel/wordgames .
 COPY entrypoint.sh .
 RUN chown -R nobody: /app
 USER nobody

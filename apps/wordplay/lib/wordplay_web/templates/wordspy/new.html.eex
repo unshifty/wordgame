@@ -3,16 +3,20 @@
   <p>A word guessing game for teams of two like the boardgame Codenames.</p>
   <p>Play in person or over video chat.</p>
   <p class="mt-5">There are currently <span class="font-bold"><%= game_count() %></span> games being played.</p>
-  <p>Choose <span class="font-semibold">Clean Words</span> for a family friendly game.</p>
-  <p>Choose <span class="font-semibold italic">Dirty Words</span> for a slightly randier experience.</p>
   <div class="mt-5">
+    <%= form_for @conn, Routes.wordspy_path(@conn, :show), [as: :game], fn f -> %>
+      <p>Join an existing game</p>
+      <div class="flex">
+        <%= text_input f, :name, [class: "form-input block w-56", placeholder: "Game Name"] %>
+        <%= submit "Join", class: "ml-2 btn btn-primary" %>
+      </div>
+    <% end %>
+    <p class="my-2">Or</p>
     <%= form_for @conn, Routes.wordspy_path(@conn, :create), [as: :game], fn f -> %>
       <div class="flex items-baseline">
         <label class="block">
-          <span class="text-gray-600 text-sm">Name your game</span>
           <div class="flex">
-            <%= text_input f, :name, [class: "form-input block w-56"] %>
-            <%= submit "Create Game", class: "ml-2 btn btn-primary" %>
+            <%= submit "Start a New Game", class: "btn btn-primary" %>
           </div>
         </label>
       </div>
@@ -27,14 +31,18 @@
           <span class="ml-2">Dirty Words</span>
         </label>
       </div>
+      <div class="mt-1 ml-8 text-sm">
+        <p>Choose <span class="font-semibold">Clean Words</span> for a family friendly game.</p>
+        <p>Choose <span class="font-semibold italic">Dirty Words</span> for a slightly randier experience.</p>
+      </div>
     <% end %>
   </div>
   <article class="mt-5">
     <h2 class="font-semibold">Instructions</h2>
     <p>Each team is presented with a game board containing 24 cards with one word each.</p>
-    <p>Hidden under each card is the identity of the word, either 
+    <p>Hidden under each card is the identity of the word, either
       <span class="text-red-600 font-bold">Red</span>,
-      <span class="text-blue-600 font-bold">Blue</span>, 
+      <span class="text-blue-600 font-bold">Blue</span>,
       <span class="text-gray-600 font-bold">Decoy</span>, or
       <span class="text-black font-bold">The Assassin</span>.</p>
     <p class="mt-2">Each team elects a Spy Master who is able to see the identities of all the words.</p>

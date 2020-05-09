@@ -1,1 +1,1 @@
-docker build -t wordgame .
+docker build -t wordgames .

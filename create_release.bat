@@ -3,10 +3,10 @@ set MIX_ENV=prod
 call mix deps.get --only prod
 call mix compile
 
-cd ./assets
+cd ./apps/wordplay/assets
 call npm install
 call npm run deploy
-cd ..
+cd ../../..
 
 call mix phx.digest
 

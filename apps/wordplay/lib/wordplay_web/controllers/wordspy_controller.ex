@@ -17,6 +17,10 @@ defmodule WordplayWeb.WordspyController do
     end
   end
 
+  def show(conn, %{"game" => %{"name" => name}}) do
+    redirect(conn, to: Routes.wordspy_path(conn, :show, name))
+  end
+
   def show(conn, %{"id" => game_name} = params) do
     # first see if the game exists
     # if it does, live render the game

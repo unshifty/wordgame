@@ -10,7 +10,7 @@ use Mix.Config
 # Configures the endpoint
 config :wordplay, WordplayWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "jT0y8r6O+5hMuNZw+Ub04kJMwvZKBXZiUbYQhHddWeoXhcL+3uVn1Hm5Rxx89ibT",
+  secret_key_base: System.get_env("SECRET_KEY_BASE") || "jT0y8r6O+5hMuNZw+Ub04kJMwvZKBXZiUbYQhHddWeoXhcL+3uVn1Hm5Rxx89ibT",
   render_errors: [view: WordplayWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Wordplay.PubSub,
   live_view: [signing_salt: "PM/V3wTP"]

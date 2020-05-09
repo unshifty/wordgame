@@ -3,6 +3,7 @@ defmodule Wordspy.GameSupervisor do
   Responsible for spinning up and supervising new GameServers
   """
   use DynamicSupervisor
+  require Logger
 
   alias Wordspy.GameServer
 
@@ -11,6 +12,7 @@ defmodule Wordspy.GameSupervisor do
   end
 
   def init(:ok) do
+    Logger.info("#{__MODULE__} started")
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 

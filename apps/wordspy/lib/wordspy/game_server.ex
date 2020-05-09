@@ -1,5 +1,6 @@
 defmodule Wordspy.GameServer do
   use GenServer
+  require Logger
 
   @timeout :timer.hours(2)
 
@@ -8,6 +9,7 @@ defmodule Wordspy.GameServer do
   end
 
   def init({name, wordlib}) do
+    Logger.info("Game #{name} started")
     game = Wordspy.Game.new(name, wordlib)
     {:ok, game, @timeout}
   end
@@ -38,10 +40,6 @@ defmodule Wordspy.GameServer do
     call(game_name, {:new_game, wordlib})
   end
 
-  def set_spymasters(game_name, spymasters) do
-    call(game_name, {:set_spymasters, spymasters})
-  end
-
     @doc """
   Returns a tuple used to register and lookup a game server process by name.
   """
@@ -69,11 +67,6 @@ defmodule Wordspy.GameServer do
 
   def handle_call({:new_game, wordlib}, _, game) do
     new_game = Wordspy.Game.new(game.name, wordlib)
-    {:reply, new_game, new_game, @timeout}
-  end
-
-  def handle_call({:set_spymasters, spymasters}, _, game) do
-    new_game = %Wordspy.Game{game | spymasters: spymasters}
     {:reply, new_game, new_game, @timeout}
   end
 
