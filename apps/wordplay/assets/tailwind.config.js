@@ -1,7 +1,10 @@
 module.exports = {
   purge: [
-    './**/*.html',
-    './**/*.js',
+    // '**/*.css',
+    '../lib/**/*.html',
+    '../lib/**/*.ex',
+    '../lib/**/*.eex',
+    '../lib/**/*.leex'
   ],
   theme: {
     extend: {

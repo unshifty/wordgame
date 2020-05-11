@@ -96,7 +96,6 @@ defmodule WordplayWeb.WordspyLive do
   def handle_event("choose_team", %{"team" => team}, socket) do
     # update socket
     socket = assign(socket, team: String.to_existing_atom(team))
-    IO.inspect(socket)
     # update presence with the chosen side
     broadcast_presence_update(socket, :team, socket.assigns.team)
 

@@ -3,11 +3,11 @@ defmodule Wordspy.WordCache do
   require Logger
 
   def start_link(_) do
-    standard = load_word_list("../../data/wordlist_codenames.txt")
-    duet = load_word_list("../../data/wordlist_duet.txt")
+    standard = load_word_list("priv/wordlist_codenames.txt")
+    duet = load_word_list("priv/wordlist_duet.txt")
 
     default = Enum.concat(standard, duet)
-    undercover = load_word_list("../../data/wordlist_undercover.txt")
+    undercover = load_word_list("priv/wordlist_undercover.txt")
 
     Logger.info("Loaded word lists")
 
@@ -26,7 +26,7 @@ defmodule Wordspy.WordCache do
   end
 
   defp load_word_list(path) do
-    path
+    Application.app_dir(:wordspy, path)
     # get the aboslute path
     |> Path.expand(__DIR__)
     # read the file (throw if error) as a string

@@ -16,7 +16,7 @@ defmodule WordplayWeb.TeamPanelLive do
         <div class="mt-2">
           <%= if @game.turn == team and @team == team do %>
           <button phx-click="end_turn"
-                  class="px-2 py-1 w-full <%= text_class(team) %> bg-white font-semibold rounded shadow hover:bg-gray-100 focus:outline-none">
+                  class="py-2 w-full btn-basic btn-tertiary <%= text_class(team) %>">
             End Turn
           </button>
           <% else %>

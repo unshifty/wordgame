@@ -17,15 +17,15 @@ defmodule Wordplay.NameGenerator do
   end
 
   def adjectives() do
-    load_word_list("../../data/adjectives_1.txt")
+    load_word_list("priv/word_lists/adjectives_1.txt")
   end
 
   def nouns() do
-    load_word_list("../../data/nouns.txt")
+    load_word_list("priv/word_lists/nouns.txt")
   end
 
   defp load_word_list(path) do
-    path
+    Application.app_dir(:wordplay, path)
     # get the aboslute path
     |> Path.expand(__DIR__)
     # read the file (throw if error) as a string

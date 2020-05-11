@@ -11,10 +11,16 @@ defmodule WordplayWeb.Endpoint do
   ]
 
   socket "/socket", WordplayWeb.UserSocket,
-    websocket: true,
+    websocket: [
+      check_origin: ["https://okadoke.com", "http://localhost", "http://localhost:4000"]
+    ],
     longpoll: false
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [
+      check_origin: ["https://okadoke.com", "http://localhost", "http://localhost:4000"],
+      connect_info: [session: @session_options]
+    ]
 
   # Serve at "/" the static files from "priv/static" directory.
   #

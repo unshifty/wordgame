@@ -23,7 +23,7 @@ defmodule WordplayWeb.Router do
 
     # live "/wordspy/games/:id", WordspyLive, :index
 
-    live "/", PageLive, :index
+    get "/", WordspyController, :new
   end
 
   # Other scopes may use custom stacks.

@@ -1,4 +1,11 @@
-<section class="text-sm sm:text-base font-semibold">
+<div class="flex justify-between items-baseline">
+  <h1 class="font-bold text-lg hover:text-green-600"><a href="/wordspy">Wordspy</a></h1>
+  <div>
+    <p class="inline text-sm uppercase text-gray-600 font-semibold">Game</p>
+    <input readonly type="text" value="<%= @game.name %>" class="w-40 ml-1 px-1 py-0 text-right form-input bg-gray-200"/>
+  </div>
+</div>
+<section class="mt-5 text-sm sm:text-base font-semibold">
   <div class="mx-auto flex flex-col">
     <div class="xs:hidden flex items-center justify-between">
       <%= live_component(@socket, WordplayWeb.AllegianceLive, assigns) %>
@@ -9,7 +16,7 @@
         <% @user_count.spymasters >= 2 -> %>
           <p class="text-center">There are already 2 Spy Masters</p>
         <% true -> %>
-          <button class="h-10 w-40 btn px-1 bg-purple-500 text-white shadow hover:bg-purple-600"
+          <button class="h-10 w-40 btn-basic btn-secondary"
                   phx-click="spymaster_clicked">Become Spymaster</button>
         <% end %>
       </div>
@@ -25,8 +32,8 @@
           <% @user_count.spymasters >= 2 -> %>
             <p class="text-center">There are already 2 Spy Masters</p>
           <% true -> %>
-            <button class="h-10 w-40 btn px-1 bg-purple-500 text-white shadow hover:bg-purple-600"
-                    phx-click="spymaster_clicked">Become Spymaster</button>
+            <button class="h-10 w-40 btn-basic btn-secondary"
+                  phx-click="spymaster_clicked">Become Spymaster</button>
           <% end %>
         </div>
       </div>

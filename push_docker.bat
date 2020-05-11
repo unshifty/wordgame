@@ -1,0 +1,1 @@
+docker push docker.pkg.github.com/okadoke/wordgame/wordgames:0.1.1

@@ -1,20 +1,20 @@
-<section class="mx-auto max-w-xl">
-  <h1 class="font-bold text-lg">Wordspy</h1>
-  <p>A word guessing game for teams of two like the boardgame Codenames.</p>
-  <p>Play in person or over video chat.</p>
-  <p class="mt-5">There are currently <span class="font-bold"><%= game_count() %></span> games being played.</p>
-  <div class="mt-2">
-    <div class="">
-      <%= form_for @conn, Routes.wordspy_path(@conn, :show), [as: :game], fn f -> %>
-        <p class="text-sm text-gray-600">Join an existing game</p>
-        <div class="flex">
-          <%= text_input f, :name, [class: "w-56 form-input block", placeholder: "Game Name"] %>
-          <%= submit "Join", class: "ml-2 btn btn-primary uppercase" %>
-        </div>
-      <% end %>
+<section class="">
+  <div class="flex justify-between">
+    <div>
+      <h1 class="font-bold text-lg">Wordspy</h1>
+      <p>A word guessing game for teams of two.</p>
+      <p>Like the boardgame Codenames.</p>
+      <p>Play in person or over video chat.</p>
     </div>
-    <div class="mt-10">
+  </div>
+  <p class="mt-6 pl-4 border-l-4 border-green-500">
+    <span class="mt-1 text-center font-bold text-lg"><%= game_count() %>
+    </span> active game<%= if game_count() != 1, do: "s" %></span>
+  </p>
+  <div class="flex flex-col sm:flex-row justify-between">
+    <div class="mb-6 mt-6">
       <%= form_for @conn, Routes.wordspy_path(@conn, :create), [as: :game], fn f -> %>
+        <p class="text-sm text-gray-600"> </p>
         <div class="flex items-baseline">
           <label class="block">
             <div class="flex">
@@ -22,15 +22,15 @@
             </div>
           </label>
         </div>
-        <div class="mt-2 flex items-center text-sm">
+        <div class="mt-2 flex items-baseline">
           <%# <span class="text-gray-600 text-sm">Words:</span> %>
           <label class="">
             <%= radio_button(f, :wordlist, "default", [checked: true, class: "form-radio"]) %>
-            <span class="ml-2">Clean Words</span>
+            <span class="ml-1 text-sm">Clean Words</span>
           </label>
           <label class="ml-5">
             <%= radio_button(f, :wordlist, "dirty", [class: "form-radio"]) %>
-            <span class="ml-2">Dirty Words</span>
+            <span class="ml-1 text-sm">Dirty Words</span>
           </label>
         </div>
         <%# <div class="mt-2 ml-1 pl-2 text-sm border-l-4 border-gray-600 bg-gray-200">
@@ -39,21 +39,42 @@
         </div> %>
       <% end %>
     </div>
+    <div x-data="{ join_enabled: true }">
+      <%= form_for @conn, Routes.wordspy_path(@conn, :show), [as: :game], fn f -> %>
+        <p class="h-6 text-sm text-gray-600">Join an existing game</p>
+        <div class="flex">
+          <%= text_input f, :name, [class: "w-56 form-input block", placeholder: "Game Name"] %>
+          <%= submit "Join", [class: "ml-2 btn btn-primary uppercase", x-show="join_enabled"]%>
+        </div>
+      <% end %>
+    </div>
   </div>
-  <article class="mt-10">
-    <h2 class="font-semibold">Instructions</h2>
-    <p>Each team is presented with a game board containing 24 cards with one word each.</p>
-    <p>Hidden under each card is the identity of the word, either
-      <span class="text-red-600 font-bold">Red</span>,
-      <span class="text-blue-600 font-bold">Blue</span>,
-      <span class="text-gray-600 font-bold">Decoy</span>, or
-      <span class="text-black font-bold">The Assassin</span>.</p>
-    <p class="mt-2">Each team elects a Spy Master who is able to see the identities of all the words.</p>
-    <p>Taking turns, each Spy Master gives a one word clue and a number to the rest of the team.</p>
-    <p>The clue relates to unrevealed words that belong to the team, and the number tells the team how many words the clue relates to.</p>
-    <p class="mt-2">The Spy Master's team reveals 0 or more cards that they think the Spy Master was referring to, then passes their turn to the other team.</p>
-    <p class="mt-2">The game ends when all of a team's words have been revealed, regardless of who revealed them.</p>
-    <p>Or</p>
-    <p>If a team reveals the Assassin card, the other team wins automatically!</p>
-  </article>
+  <section class="mt-10 border border-green-400" x-data="{ open: false }">
+    <div class="px-3 py-2 bg-green-200 text-green-800">
+      <span class="font-semibold">Instructions</span>
+      (
+      <button class="text-sm underline focus:outline-none"
+              @click="open = !open">
+         <span x-show="open">hide</span><span x-show="!open">show<span</h2>
+      </button>
+      )
+    </div>
+    <article class="px-3 py-2">
+      <div x-show="open">
+        <p>The game board contains a grid of 24 cards with one word each.</p>
+        <p>Hidden under each card is the identity of the word, either
+          <span class="text-red-600 font-bold">Red</span>,
+          <span class="text-blue-600 font-bold">Blue</span>,
+          <span class="text-gray-600 font-bold">Decoy</span>, or
+          <span class="text-black font-bold">The Assassin</span>.</p>
+        <p class="mt-2">Each team elects a Spy Master who is able to see the identities of all the words.</p>
+        <p>Taking turns, each Spy Master gives a one word clue and a number to the rest of the team.</p>
+        <p>The clue relates to unrevealed words that belong to the team, and the number tells the team how many words the clue relates to.</p>
+        <p class="mt-2">The Spy Master's team reveals 0 or more cards that they think the Spy Master was referring to, then passes their turn to the other team.</p>
+        <p class="mt-2">The game ends when all of a team's words have been revealed, regardless of who revealed them.</p>
+        <p>Or</p>
+        <p>If a team reveals the Assassin card, the other team wins automatically!</p>
+      </div>
+    </article>
+  </section>
 </section>

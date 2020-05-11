@@ -16,6 +16,12 @@ config :wordplay, WordplayWeb.Endpoint,
     port: port,
     transport_options: [socket_opts: [:inet6]]
   ],
+  check_origin: [
+    "https://okadoke.com",
+    "https://www.okadoke.com",
+    "http://localhost",
+    "http://localhost:4000",
+  ],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 
