@@ -59,10 +59,13 @@ body {
   @apply bg-gradient-green-500 text-white leading-tight border border-green-600
   /* @apply bg-green-500 text-white leading-tight border border-transparent */
 }
-.btn-primary:hover {
+.btn-primary:disabled {
+  @apply opacity-50 cursor-not-allowed
+}
+.btn-primary:hover:not(:disabled) {
   @apply bg-gradient-green-600
 }
-.btn-primary:active {
+.btn-primary:active:not(:disabled) {
   @apply bg-gradient-green-700 shadow-inner border-green-800
 }
 

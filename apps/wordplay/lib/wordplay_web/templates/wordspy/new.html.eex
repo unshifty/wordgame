@@ -12,39 +12,57 @@
     </span> active game<%= if game_count() != 1, do: "s" %></span>
   </p>
   <div class="flex flex-col sm:flex-row justify-between">
-    <div class="mb-6 mt-6">
+    <div class="flex mb-6 mt-6">
       <%= form_for @conn, Routes.wordspy_path(@conn, :create), [as: :game], fn f -> %>
-        <p class="text-sm text-gray-600"> </p>
-        <div class="flex items-baseline">
-          <label class="block">
-            <div class="flex">
-              <%= submit "Start a New Game", class: "w-56 btn btn-primary uppercase" %>
+        <div class="">
+          <span class="text-gray-600 text-sm uppercase">Start a New Game</span>
+          <div class="flex items-start border-t-2 border-text-gray-600">
+            <div class="mt-2">
+              <div class="grid grid-rows-3 gap-2">
+                <label class="">
+                  <%= radio_button(f, :wordlist, "default", [checked: true, class: "form-radio"]) %>
+                  <span class="ml-1 text-sm">Clean Words</span>
+                </label>
+                <label class="">
+                  <%= radio_button(f, :wordlist, "dirty", [class: "form-radio"]) %>
+                  <span class="ml-1 text-sm">Dirty Words</span>
+                </label>
+                <label class="">
+                  <%= radio_button(f, :wordlist, "combo", [class: "form-radio"]) %>
+                  <span class="ml-1 text-sm">Combo Pack</span>
+                </label>
+              </div>
             </div>
-          </label>
+            <%= submit "Create Game", class: "mt-2 ml-10 btn btn-primary uppercase" %>
+          </div>
         </div>
-        <div class="mt-2 flex items-baseline">
-          <%# <span class="text-gray-600 text-sm">Words:</span> %>
-          <label class="">
-            <%= radio_button(f, :wordlist, "default", [checked: true, class: "form-radio"]) %>
-            <span class="ml-1 text-sm">Clean Words</span>
-          </label>
-          <label class="ml-5">
-            <%= radio_button(f, :wordlist, "dirty", [class: "form-radio"]) %>
-            <span class="ml-1 text-sm">Dirty Words</span>
-          </label>
+        <!--
+        <div>
+          <%= label(f, :options, "Word list") %>
+          <%= label do %>
+            <button type="button" class="btn btn-tertiary">Clean</button>
+            <%= radio_button(f, :wordlist, 'default', [checked: true, hidden: true]) %>
+          <% end %>
+          <%= label do %>
+            <button type="button" class="btn btn-tertiary">Dirty</button>
+            <%= radio_button(f, :wordlist, 'dirty', [hidden: true]) %>
+          <% end %>
         </div>
-        <%# <div class="mt-2 ml-1 pl-2 text-sm border-l-4 border-gray-600 bg-gray-200">
-          <p>Choose <span class="font-semibold">Clean Words</span> for a family friendly game.</p>
-          <p>Choose <span class="font-semibold italic">Dirty Words</span> for a slightly randier experience.</p>
-        </div> %>
+        -->
       <% end %>
     </div>
-    <div x-data="{ join_enabled: true }">
+    <div x-data="{ join_disabled: true }" x-init="$refs.join.disabled = join_disabled">
       <%= form_for @conn, Routes.wordspy_path(@conn, :show), [as: :game], fn f -> %>
         <p class="h-6 text-sm text-gray-600">Join an existing game</p>
         <div class="flex">
-          <%= text_input f, :name, [class: "w-56 form-input block", placeholder: "Game Name"] %>
-          <%= submit "Join", [class: "ml-2 btn btn-primary uppercase", x-show="join_enabled"]%>
+          <%= text_input f, :name,
+            [
+              class: "w-56 form-input block",
+              placeholder: "Game Name",
+              x_ref: "name",
+              "@keyup": "$refs.join.disabled = $refs.name.value ===''"
+            ] %>
+          <%= submit "Join", [class: "ml-2 btn btn-primary uppercase", x_ref: "join"]%>
         </div>
       <% end %>
     </div>
