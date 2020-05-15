@@ -49,7 +49,11 @@
     <div class="my-3 border-t border-gray-500"></div>
   <% end %>
   <%= live_component(@socket, WordplayWeb.GameBoardLive, assigns) %>
-  <div class="mt-5 flex items-center justify-between">
+  <div class="mt-5 flex items-start justify-between">
+    <div class="flex">
+      <p class="px-1 flex items-center text-sm font-semibold text-white bg-blue-500 rounded-l uppercase">Blue  🏆<%= @game.score.blue %></p>
+      <p class="px-1 flex items-center text-sm font-semibold text-white bg-red-500 rounded-r uppercase">Red  🏆<%= @game.score.red %></p>
+    </div>
     <button class="btn btn-tertiary" phx-click="new_game">New Game</button>
   </div>
 </section>

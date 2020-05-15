@@ -62,7 +62,13 @@ defmodule WordplayWeb.WordspyLive do
 
   def handle_event("new_game", _, socket) do
     # create a new game and broadcast to everyone else
-    game = Wordspy.GameServer.new_game(socket.assigns.game.name, socket.assigns.game.wordlib)
+    game =
+      Wordspy.GameServer.new_game(
+        socket.assigns.game.name,
+        socket.assigns.game.wordlib,
+        socket.assigns.game.score
+      )
+
     broadcast_game_update(game.name, :new_game)
 
     # remove spymaster designation from presence and socket

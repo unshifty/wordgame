@@ -1,9 +1,9 @@
 defmodule Wordspy.Game do
-  defstruct [:name, :wordlib, :words, :tiles, :turn, :winner]
+  defstruct [:name, :wordlib, :words, :tiles, :turn, :winner, :score]
 
   alias Wordspy.{Game, Tile}
 
-  def new(name, wordlib) do
+  def new(name, wordlib, score \\ %{red: 0, blue: 0}) do
     [team1, team2] = Enum.shuffle([:blue, :red])
     words = Wordspy.WordCache.generate_wordset(wordlib, 24)
 
@@ -21,7 +21,8 @@ defmodule Wordspy.Game do
       words: Enum.shuffle(words),
       tiles: tilemap,
       turn: team1,
-      winner: nil
+      winner: nil,
+      score: score
     }
   end
 
@@ -39,17 +40,26 @@ defmodule Wordspy.Game do
         true -> nil
       end
 
+    score =
+      if winner do
+        %{game.score | elem(winner, 0) => game.score[elem(winner, 0)] + 1}
+      else
+        game.score
+      end
+
     # if revealed tile was not the team's end the turn
-    turn = cond do
-      tile.team == game.turn  -> game.turn
-      true                    -> not_team(game.turn)
-    end
+    turn =
+      cond do
+        tile.team == game.turn -> game.turn
+        true -> not_team(game.turn)
+      end
 
     %Game{
       game
       | tiles: Map.put(game.tiles, word, tile),
         turn: turn,
-        winner: winner
+        winner: winner,
+        score: score
     }
   end
 
@@ -60,19 +70,19 @@ defmodule Wordspy.Game do
   def total_tiles(game, team) do
     game.tiles
     |> Enum.filter(fn {_, t} -> t.team == team end)
-    |> Enum.count
+    |> Enum.count()
   end
 
   def revealed_tiles(game, team) do
     game.tiles
     |> Enum.filter(fn {_, t} -> t.team == team and t.visibility == :revealed end)
-    |> Enum.count
+    |> Enum.count()
   end
 
   def hidden_tiles(game, team) do
     game.tiles
     |> Enum.filter(fn {_, t} -> t.team == team and t.visibility == :hidden end)
-    |> Enum.count
+    |> Enum.count()
   end
 
   def is_hidden(game, word) do

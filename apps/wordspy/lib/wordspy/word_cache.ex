@@ -8,10 +8,11 @@ defmodule Wordspy.WordCache do
 
     default = Enum.concat(standard, duet)
     undercover = load_word_list("priv/wordlist_undercover.txt")
+    combo = Enum.concat(default, undercover)
 
     Logger.info("Loaded word lists")
 
-    Agent.start_link(fn -> %{default: default, dirty: undercover} end,
+    Agent.start_link(fn -> %{default: default, dirty: undercover, combo: combo} end,
       name: __MODULE__
     )
   end

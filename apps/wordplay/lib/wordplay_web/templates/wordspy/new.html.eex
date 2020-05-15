@@ -7,17 +7,17 @@
       <p>Play in person or over video chat.</p>
     </div>
   </div>
-  <p class="mt-6 pl-4 border-l-4 border-green-500">
+  <p class="mt-2 pl-4 border-l-4 border-green-500">
     <span class="mt-1 text-center font-bold text-lg"><%= game_count() %>
     </span> active game<%= if game_count() != 1, do: "s" %></span>
   </p>
-  <div class="flex flex-col sm:flex-row justify-between">
-    <div class="flex mb-6 mt-6">
+  <div class="mt-10 flex flex-col sm:flex-row justify-between">
+    <div class="mb-6">
       <%= form_for @conn, Routes.wordspy_path(@conn, :create), [as: :game], fn f -> %>
         <div class="">
-          <span class="text-gray-600 text-sm uppercase">Start a New Game</span>
-          <div class="flex items-start border-t-2 border-text-gray-600">
-            <div class="mt-2">
+          <span class="text-gray-600 text-sm font-semibold uppercase tracking-wide">Start a New Game</span>
+          <div class="pt-4 flex items-start justify-between border-t-2 border-gray-500">
+            <div class="">
               <div class="grid grid-rows-3 gap-2">
                 <label class="">
                   <%= radio_button(f, :wordlist, "default", [checked: true, class: "form-radio"]) %>
@@ -33,7 +33,7 @@
                 </label>
               </div>
             </div>
-            <%= submit "Create Game", class: "mt-2 ml-10 btn btn-primary uppercase" %>
+            <%= submit "Create Game", class: "ml-10 btn btn-primary uppercase" %>
           </div>
         </div>
         <!--
@@ -51,13 +51,14 @@
         -->
       <% end %>
     </div>
-    <div x-data="{ join_disabled: true }" x-init="$refs.join.disabled = join_disabled">
+    <div  x-data="{ join_disabled: true }" x-init="$refs.join.disabled = join_disabled"
+          class="">
       <%= form_for @conn, Routes.wordspy_path(@conn, :show), [as: :game], fn f -> %>
-        <p class="h-6 text-sm text-gray-600">Join an existing game</p>
-        <div class="flex">
+        <p class="text-sm text-gray-600 uppercase font-semibold tracking-wide">Join an existing game</p>
+        <div class="pt-4 flex border-t-2 border-gray-500">
           <%= text_input f, :name,
             [
-              class: "w-56 form-input block",
+              class: "flex-1 form-input block",
               placeholder: "Game Name",
               x_ref: "name",
               "@keyup": "$refs.join.disabled = $refs.name.value ===''"
