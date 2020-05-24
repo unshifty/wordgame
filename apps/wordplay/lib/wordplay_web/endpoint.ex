@@ -12,13 +12,27 @@ defmodule WordplayWeb.Endpoint do
 
   socket "/socket", WordplayWeb.UserSocket,
     websocket: [
-      check_origin: ["https://okadoke.com", "http://localhost", "http://localhost:4000"]
+      check_origin: [
+        "https://playword.net",
+        "https://www.playword.net",
+        "https://okadoke.com",
+        "https://www.okadoke.com",
+        "http://localhost",
+        "http://localhost:4000",
+      ]
     ],
     longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket,
     websocket: [
-      check_origin: ["https://okadoke.com", "http://localhost", "http://localhost:4000"],
+      check_origin: [
+        "https://playword.net",
+        "https://www.playword.net",
+        "https://okadoke.com",
+        "https://www.okadoke.com",
+        "http://localhost",
+        "http://localhost:4000",
+      ],
       connect_info: [session: @session_options]
     ]
 

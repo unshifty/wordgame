@@ -17,6 +17,8 @@ config :wordplay, WordplayWeb.Endpoint,
     transport_options: [socket_opts: [:inet6]]
   ],
   check_origin: [
+    "https://playword.net",
+    "https://www.playword.net",
     "https://okadoke.com",
     "https://www.okadoke.com",
     "http://localhost",
