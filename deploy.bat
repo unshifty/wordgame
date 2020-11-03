@@ -1,4 +1,4 @@
-set VERSION=0.1.4
+set VERSION=0.1.5
 
 IF "%1"=="build" GOTO build
 IF "%1"=="push" GOTO push

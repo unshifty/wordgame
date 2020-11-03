@@ -20,7 +20,7 @@ defmodule WordplayWeb.TeamPanelLive do
             End Turn
           </button>
           <% else %>
-          <p class="w-full px-2 py-1 text-center text-gray-500 font-semibold rounded"><%= team_name(@game.turn) %>'s Turn</p>
+          <p class="w-full px-2 py-2 text-center text-gray-500 font-semibold rounded"><%= team_name(@game.turn) %>'s Turn</p>
           <% end %>
         </div>
       </div>

@@ -53,7 +53,6 @@ defmodule WordplayWeb.WordspyLive do
   @impl true
   def handle_event("reveal", %{"word" => word}, socket) do
     game = Wordspy.GameServer.reveal(socket.assigns.game.name, word)
-
     broadcast_game_update(game.name, :word_reveal)
 
     socket = assign(socket, game: game)

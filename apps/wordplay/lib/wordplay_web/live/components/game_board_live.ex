@@ -47,8 +47,10 @@ defmodule WordplayWeb.GameBoardLive do
     end
   end
 
-  def tile_classes(_tile, %{is_spymaster: true}) do
-    "bg-gray-300 text-black border border-gray-400 cursor-default"
+  # def tile_classes(_tile, %{is_spymaster: true}) do
+  def tile_classes(_tile, %{is_spymaster: is_spymaster, game: %Game{winner: winner}})
+    when (is_spymaster or winner != nil) do
+      "bg-gray-300 text-black border border-gray-400 cursor-default"
   end
 
   def tile_classes(_tile, %{game: game, team: user_team}) do
@@ -63,11 +65,8 @@ defmodule WordplayWeb.GameBoardLive do
     ""
   end
 
-  def word_classes(_tile, %{is_spymaster: false}) do
-    ""
-  end
-
-  def word_classes(tile, _is_spymaster) do
+  def word_classes(tile, %{is_spymaster: is_spymaster, game: %Game{winner: winner}})
+  when (is_spymaster or winner != nil) do
     cond do
       tile.team == :red ->
         "border-b-4 border-red-600 text-red-600"
@@ -81,5 +80,9 @@ defmodule WordplayWeb.GameBoardLive do
       tile.team == :assassin ->
         "p-1 bg-black text-white rounded-lg"
     end
+  end
+
+  def word_classes(_tile, _assigns) do
+    ""
   end
 end

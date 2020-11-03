@@ -29,13 +29,14 @@ defmodule Wordspy.Game do
   def reveal(game, word) do
     # gets the tile keyed by 'word'
     tile = Tile.reveal(game.tiles[word], game.turn)
+    tiles = Map.put(game.tiles, word, tile)
 
     # check win conditions
     # if team has no remaining tiles, they win
     # if team revealed the assassin they lose
     winner =
       cond do
-        hidden_tiles(game, game.turn) == 0 -> {game.turn, :success}
+        hidden_tiles(tiles, game.turn) == 0 -> {game.turn, :success}
         tile.team == :assassin -> {not_team(game.turn), :assassin}
         true -> nil
       end
@@ -56,7 +57,7 @@ defmodule Wordspy.Game do
 
     %Game{
       game
-      | tiles: Map.put(game.tiles, word, tile),
+      | tiles: tiles,
         turn: turn,
         winner: winner,
         score: score
@@ -79,8 +80,8 @@ defmodule Wordspy.Game do
     |> Enum.count()
   end
 
-  def hidden_tiles(game, team) do
-    game.tiles
+  def hidden_tiles(tiles, team) do
+    tiles
     |> Enum.filter(fn {_, t} -> t.team == team and t.visibility == :hidden end)
     |> Enum.count()
   end
