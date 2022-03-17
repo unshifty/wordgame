@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <%= csrf_meta_tag() %>
+    <%= live_title_tag assigns[:page_title] || "Wordspy", suffix: "" %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
+    <script defer type="text/javascript" src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+    <script defer type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
+  </head>
+  <body class="bg-gray-100">
+    <%# <header class="pt-1 bg-green-500"></header> %>
+    <main class="">
+      <%= @inner_content %>
+    </main>
+    <footer class="flex justify-center max-w-3xl mx-auto mt-10 sm:p-3">
+      <div class="px-5 py-3 text-center bg-green-200 sm:rounded">
+        <p class="font-semibold">Made by a 👨 with a 🐕 in Somerville, MA</p>
+        <div class="mt-3 text-center">
+          <p>If you enjoy the game</p>
+          <a href="https://www.buymeacoffee.com/rockethat" target="_blank" class="font-semibold text-green-900 border-b-2 border-green-500">Buy the developer a coffee</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

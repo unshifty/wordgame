@@ -1,0 +1,61 @@
+<div class="h-screen">
+  <div class="flex items-baseline justify-between">
+    <h1 class="text-lg font-bold hover:text-green-600"><a href="/wordspy">Wordspy</a></h1>
+    <div>
+      <p class="inline text-sm font-semibold text-gray-600 uppercase">Game</p>
+      <input readonly type="text" value={@game.name} class="w-40 px-1 py-0 ml-1 text-right bg-gray-200 form-input"/>
+    </div>
+  </div>
+  <section class="mt-5 text-sm font-semibold  sm:text-base">
+    <div class="flex flex-col mx-auto">
+      <div class="flex items-center justify-between xs:hidden">
+        <%= live_component(@socket, WordspyWeb.AllegianceLive, assigns) %>
+        <div class="mt-5 font-semibold">
+          <%= cond do %>
+          <% @is_spymaster -> %>
+            <p class="px-1 font-semibold text-white bg-purple-600 rounded">You are the <em>Spy Master</em></p>
+          <% @user_count.spymasters >= 2 -> %>
+            <p class="text-center">There are already 2 Spy Masters</p>
+          <% true -> %>
+            <button class="w-40 h-10 btn-basic btn-secondary"
+                    phx-click="spymaster_clicked">Become Spymaster</button>
+          <% end %>
+        </div>
+      </div>
+      <div class="flex items-stretch justify-between text-gray-800">
+        <%= live_component(@socket, WordspyWeb.TeamPanelLive, %{assigns: assigns, team: :blue}) %>
+        <div class="flex-col items-center hidden mx-5 xs:flex">
+          <%= live_component(@socket, WordspyWeb.AllegianceLive, assigns) %>
+          <div class="flex items-center h-10 mt-2 font-semibold">
+            <%= cond do %>
+            <% @is_spymaster -> %>
+              <p class="px-1 font-semibold text-white bg-purple-600 rounded">You're the <em>Spy Master</em></p>
+            <% @user_count.spymasters >= 2 -> %>
+              <p class="text-center">There are already 2 Spy Masters</p>
+            <% true -> %>
+              <button class="w-40 h-10 btn-basic btn-secondary"
+                    phx-click="spymaster_clicked">Become Spymaster</button>
+            <% end %>
+          </div>
+        </div>
+        <%= live_component(@socket, WordspyWeb.TeamPanelLive, %{assigns: assigns, team: :red}) %>
+      </div>
+    </div>
+    <%= case @game.winner do %>
+    <% {:red, _} -> %>
+      <div class="p-4 my-3 text-center text-red-800 bg-red-200 rounded">Red Wins!</div>
+    <% {:blue, _} -> %>
+      <div class="p-4 my-3 text-lg text-center text-blue-800 bg-blue-200 rounded">Blue Wins!</div>
+    <% _ -> %>
+      <div class="my-3 border-t border-gray-500"></div>
+    <% end %>
+    <%= live_component(@socket, WordspyWeb.GameBoardLive, assigns) %>
+    <div class="flex items-start justify-between mt-5">
+      <div class="flex">
+        <p class="flex items-center px-2 text-sm font-semibold text-white uppercase bg-blue-500 rounded-l">Blue  🏆<%= @game.score.blue %></p>
+        <p class="flex items-center px-2 text-sm font-semibold text-white uppercase bg-red-500 rounded-r">Red  🏆<%= @game.score.red %></p>
+      </div>
+      <button class="btn btn-tertiary" phx-click="new_game">New Game</button>
+    </div>
+  </section>
+</div>

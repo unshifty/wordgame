@@ -1,0 +1,39 @@
+# fly.toml file generated for wordspy on 2022-03-17T13:45:41-04:00
+
+app = "wordspy"
+
+kill_signal = "SIGTERM"
+kill_timeout = 5
+processes = []
+
+[env]
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[[services]]
+  http_checks = []
+  internal_port = 4000
+  processes = ["app"]
+  protocol = "tcp"
+  script_checks = []
+
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "30s"
+    interval = "15s"
+    restart_limit = 6
+    timeout = "2s"

@@ -1,0 +1,79 @@
+<section class="">
+  <div class="flex justify-between">
+    <div >
+      <h1 class="py-2 text-3xl font-black">Wordspy</h1>
+      <p>A word guessing game for two teams of two or more players.</p>
+      <p>Like the boardgame Codenames.</p>
+      <p>Play in person or over video chat.</p>
+    </div>
+  </div>
+  <p class="pl-4 my-8 border-l-4 border-green-500">
+    <span class="mt-1 text-lg font-bold text-center"><%= game_count() %></span>
+    <span> active game<%= if game_count() != 1, do: "s" %></span>
+  </p>
+  <div class="flex flex-col justify-between lg:flex-row">
+    <div>
+      <%= form_for @conn, Routes.wordspy_path(@conn, :create), [as: :game], fn f -> %>
+        <div class="max-w-sm">
+          <span class="text-xl font-semibold text-gray-800">Start a New Game</span>
+          <div class="flex items-start justify-between pt-4 ">
+            <div class="">
+              <div class="grid grid-rows-3 gap-2">
+                <label class="">
+                  <%= radio_button(f, :wordlist, "default", [checked: true, class: "form-radio"]) %>
+                  <span class="ml-1 text-sm">Clean Words</span>
+                </label>
+                <label class="">
+                  <%= radio_button(f, :wordlist, "dirty", [class: "form-radio"]) %>
+                  <span class="ml-1 text-sm">Dirty Words</span>
+                </label>
+                <label class="">
+                  <%= radio_button(f, :wordlist, "combo", [class: "form-radio"]) %>
+                  <span class="ml-1 text-sm">Combo Pack</span>
+                </label>
+              </div>
+            </div>
+            <%= submit "Create Game", class: "ml-10 btn btn-primary uppercase" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div  x-data="{ join_disabled: true }" x-init="$refs.join.disabled = join_disabled"
+          class="max-w-sm mt-10 lg:mt-0">
+      <%= form_for @conn, Routes.wordspy_path(@conn, :show), [as: :game], fn f -> %>
+        <p class="text-xl font-semibold text-gray-800">Join an existing game</p>
+        <div class="flex pt-4 ">
+          <%= text_input f, :name,
+            [
+              class: "flex-1 form-input block",
+              placeholder: "Game Name",
+              x_ref: "name",
+              "@keyup": "$refs.join.disabled = $refs.name.value ===''"
+            ] %>
+          <%= submit "Join", [class: "ml-2 btn btn-primary uppercase", x_ref: "join"]%>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <section class="mt-10" >
+    <p class="text-xl font-semibold text-gray-800">Instructions</p>
+    <article class="py-3">
+      <div >
+        <p>The game board contains a grid of 24 cards with one word each.</p>
+        <p>Hidden under each card is the allegiance of the word, either
+          <span class="font-semibold text-red-600">Red</span>,
+          <span class="font-semibold text-blue-600">Blue</span>,
+          <span class="font-semibold text-gray-600">Decoy</span>, or
+          <span class="font-semibold text-black">The Assassin</span>.</p>
+        <p class="mt-3">Each team elects a Spy Master who is able to see the allegiances of all the words.</p>
+        <p>Taking turns, each Spy Master gives a one word clue and a number to the rest of the team.</p>
+        <p>The clue should allow the spymaster's teammates to guess which unrevealed words belong to the team, and the number tells the team how many words the clue relates to.</p>
+        <p class="mt-3">The Spy Master's team reveals 0 or more cards that they think are part of their team. If the team reveals an opponents card, their turn passes to the other team automatically. 
+        Otherwise, they may pass their turn to the opposing team whenever they are done guessing.</p>
+        <p class="mt-3">The game ends when all of a team's words have been revealed, regardless of who revealed them.</p>
+        <p>Or</p>
+        <p>If a team reveals the Assassin card, the other team wins automatically!</p>
+      </div>
+    </article>
+  </section>
+</section>

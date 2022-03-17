@@ -1,13 +1,8 @@
-set MIX_ENV=prod
+REM https://hexdocs.pm/phoenix/releases.html
 
 call mix deps.get --only prod
+set MIX_ENV=prod
 call mix compile
-
-cd ./apps/wordplay/assets
-call npm install
-call npm run deploy
-cd ../../..
-
-call mix phx.digest
-
+call mix assets.deploy
+call mix phx.gen.release
 call mix release --overwrite
